@@ -10,7 +10,7 @@ export default function Header(props) {
 const styles = StyleSheet.create({
   header: {
     fontSize: 14,
-    color: '#fff',
+    color: 'black',
     fontWeight: 'normal',
     paddingVertical: 14,
   },
