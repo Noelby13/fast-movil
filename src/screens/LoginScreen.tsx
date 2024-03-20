@@ -5,17 +5,26 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { LogoFast } from '../components/LogoFast'
 import UserLogin from '../components/UserLogin'
 
-export const LoginScreen = () => {
+export const LoginScreen = ({navigation}) => {
+
+    
+  const onLoginPressed = () => {
+    
+    navigation.navigate('DashboardScreen')
+  }
+
+
+
   return (
     <SafeAreaView style ={styles.safeContainer}> 
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS ==='ios'? 'padding' : 'height'}  >
-     <View style={styles.containerHeader}>
+     <View style={styles.containerHeader} >
         {/* <UserLogin></UserLogin> */}
         <LogoFast></LogoFast>
         <Text style={styles.title}>Iniciar Sesion</Text>
 
      </View>
-     <ScrollView style={{backgroundColor:'white'}}>
+     <ScrollView style={{backgroundColor:'white'}} >
 
      <View style={styles.containerInfo}>
         <View style={styles.credentialsEmail}>
@@ -23,20 +32,20 @@ export const LoginScreen = () => {
             <TextInput style={styles.TextInput}></TextInput>
         </View>
         <View style={styles.credentialsPw}>
-            <View ><Text style={styles.labelCredentials}>Contrasena</Text></View>
+            <View ><Text style={styles.labelCredentials}>Contraseña</Text></View>
             <TextInput style={styles.TextInput}></TextInput>
         </View>
         <Pressable>
-            <Text style ={styles.forgotPw}>Olvide mi contrasena</Text>
+            <Text style ={styles.forgotPw}>Olvide mi contrseña</Text>
         </Pressable>
-        <Button mode='contained' style={styles.button}>
+        <Button mode='contained' style={styles.button} onPress={onLoginPressed}>
             <Text>Entrar</Text>
         </Button>
         <Pressable>
-            <Text style ={styles.forgotPw}>Olvide mi contrasena</Text>
+            <Text style ={styles.labelNotAccount}>No tienes cuenta?</Text>
         </Pressable>
         <Pressable>
-            <Text style ={styles.forgotPw}>Olvide mi contrasena</Text>
+            <Text style ={styles.newAccount}>Registrarme</Text>
         </Pressable>
        
     </View>
@@ -68,6 +77,7 @@ const styles = StyleSheet.create({
         flex:1,
         // justifyContent: 'center',
         alignItems:'center',
+        justifyContent:'center',
         paddingTop:26,
 
     },
@@ -116,6 +126,19 @@ const styles = StyleSheet.create({
         height:62,
         justifyContent:'center',
         backgroundColor:"#FF7622"
+    },
+    labelNotAccount: {
+        alignSelf:'center',
+        fontSize: 16,
+        marginTop: 40,
+
+    },
+    newAccount:{
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#FF7622',
+        alignSelf: 'center',
+        marginTop: 13
     }
 
 
