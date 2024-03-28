@@ -35,47 +35,49 @@ interface UserRecord {
     token: null,
     isAuthenticated: false,
     setUserAndToken: (user, token, isAuthenticated) => set({ user, token, isAuthenticated }),
+   
     login: async (email, password) => {
-      try {
-        const formData = new FormData();
-        formData.append('identity', email);
-        formData.append('password', password);
-        const response = await fetch('https://fast.pockethost.io/api/collections/usersAdmin/auth-with-password', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: formData,
-        });
-  
-        if (!response.ok) {
-          console.log(response.ok)
-          console.log(response.body)
-          return false; 
-          //throw new Error('Login failed');
-          //return;
+        try {
+          const body = JSON.stringify({
+            identity: email,
+            password: password,
+          });
+      
+          const response = await fetch('https://fast.pockethost.io/api/collections/usersAdmin/auth-with-password', {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json', // Indica que esperas recibir JSON
+              'Content-Type': 'application/json', // Indica que el cuerpo de la solicitud es un objeto JSON
+            },
+            body: body,
+          });
+      
+          if (!response.ok) {
+            console.log('Response OK:', response.ok);
+            const responseBody = await response.text(); // Intenta leer el cuerpo de la respuesta como texto si hay un error
+            console.log('Response Body:', responseBody);
+            return false;
+          }
+      
+          const data: ApiResponse = await response.json();
+      
+          set({
+            user: data.record,
+            token: data.token,
+            isAuthenticated: true,
+          });
+          return true;
+      
+        } catch (error) {
+          console.error('Login error:', error);
+          set({
+            user: null,
+            token: null,
+            isAuthenticated: false,
+          });
+          return false; // Devuelve false debido a un error
         }
-  
-        const data: ApiResponse = await response.json();
-        
-        set({
-          user: data.record,
-          token: data.token,
-          isAuthenticated: true,
-        });
-        return true;
-
-      } catch (error) {
-        console.error('Login error:', error);
-        set({
-          user: null,
-          token: null,
-          isAuthenticated: false,
-        });
-        return false; // Devuelve false debido a un error
-
-      }
-    },
+      },
     logout: () => {
       set({ user: null, token: null, isAuthenticated: false });
     },
