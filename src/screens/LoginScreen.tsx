@@ -1,17 +1,60 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { KeyboardAvoidingView, Pressable, StyleSheet, Text , View, ScrollView, Platform} from 'react-native'
-import { TextInput, Button } from 'react-native-paper'
+import { TextInput, Button, Snackbar} from 'react-native-paper'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { LogoFast } from '../components/LogoFast'
 import UserLogin from '../components/UserLogin'
+import { useAuthStore } from '../services/store/authStore'
+
 
 export const LoginScreen = ({navigation}) => {
 
+    const [email, setEmail] = useState("");
+    const [pw, setPw] = useState("");
+    const login = useAuthStore(state => state.login);
+    const isAuth = useAuthStore(state => state.isAuthenticated);
+    const [snackbarVisible, setSnackbarVisible] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState("");
+    const [passwordVisibility, setPasswordVisibility] = useState(true);
+    const [passwordIcon, setPasswordIcon] = useState('eye');    
+
+    // useEffect(() => {
+    //     if (isAuth) {
+    //         console.log("Autenticación exitosa", isAuth);
+    //         navigation.navigate('DashboardScreen');
+    //     }
+    // }, [isAuth]);
+
+    const togglePasswordVisibility = () => {
+        setPasswordVisibility(!passwordVisibility);
+        setPasswordIcon(passwordVisibility ? 'eye-off' : 'eye');
+    };
+
+
+    const onLoginPressed = async () => {
+        if (email.trim() === "" || pw.trim() === "") {
+          setSnackbarMessage("Por favor, ingrese su email y contraseña.");
+          setSnackbarVisible(true);
+          return;
+        }
     
-  const onLoginPressed = () => {
-    
-    navigation.navigate('DashboardScreen')
-  }
+        try {
+          const success = await login(email, pw);
+
+          if (!success) {
+            setSnackbarMessage("Credenciales incorrectas o problema al iniciar sesión.");
+            setSnackbarVisible(true);
+            return;
+          }
+
+          navigation.navigate('DashboardScreen');
+
+        } catch (error) {
+            console.error('Login error:', error);
+            setSnackbarMessage("Error al iniciar sesión. Por favor, intente de nuevo.");
+            setSnackbarVisible(true);
+        }
+      };
 
 
 
@@ -29,14 +72,14 @@ export const LoginScreen = ({navigation}) => {
      <View style={styles.containerInfo}>
         <View style={styles.credentialsEmail}>
             <View ><Text style={styles.labelCredentials}>Email</Text></View>
-            <TextInput style={styles.TextInput}></TextInput>
+            <TextInput style={styles.TextInput} onChangeText={setEmail} value={email}></TextInput>
         </View>
         <View style={styles.credentialsPw}>
             <View ><Text style={styles.labelCredentials}>Contraseña</Text></View>
-            <TextInput style={styles.TextInput}></TextInput>
+            <TextInput style={styles.TextInput} onChangeText={setPw} value={pw} secureTextEntry={passwordVisibility} right={<TextInput.Icon icon={passwordIcon} onPress={togglePasswordVisibility}/>}></TextInput>
         </View>
         <Pressable>
-            <Text style ={styles.forgotPw}>Olvide mi contrseña</Text>
+            <Text style ={styles.forgotPw}>Olvide mi contraseña</Text>
         </Pressable>
         <Button mode='contained' style={styles.button} onPress={onLoginPressed}>
             <Text>Entrar</Text>
@@ -52,6 +95,14 @@ export const LoginScreen = ({navigation}) => {
      </ScrollView>
 
      </KeyboardAvoidingView>
+
+     <Snackbar
+    visible={snackbarVisible}
+    onDismiss={() => setSnackbarVisible(false)}
+    duration={3000} // Duración en milisegundos antes de ocultarse automáticamente
+    >
+    {snackbarMessage}   
+    </Snackbar>
 
   </SafeAreaView>
   )
