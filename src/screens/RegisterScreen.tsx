@@ -5,25 +5,38 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { LogoFast } from '../components/LogoFast'
 import UserLogin from '../components/UserLogin'
 import { useAuthStore } from '../services/store/authStore'
+import { emailValidator } from '../helpers/emailValidator'
+import BackButton from '../components/BackButton'
 
 
-export const LoginScreen = ({navigation}) => {
+export const RegisterScreen = ({navigation}) => {
 
     const [email, setEmail] = useState("");
+    const [fullName, setFullName] = useState("");
     const [pw, setPw] = useState("");
+    const [pwValidation, setPwValidation] = useState("");
     const login = useAuthStore(state => state.login);
     const isAuth = useAuthStore(state => state.isAuthenticated);
+    const register = useAuthStore(state => state.register);
     const [snackbarVisible, setSnackbarVisible] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState("");
     const [passwordVisibility, setPasswordVisibility] = useState(true);
     const [passwordIcon, setPasswordIcon] = useState('eye');    
+    const errorMessage = useAuthStore(state => state.errorMessage);
+     // Asegúrate de obtener el mensaje de error del estado
 
-    // useEffect(() => {
-    //     if (isAuth) {
-    //         console.log("Autenticación exitosa", isAuth);
-    //         navigation.navigate('DashboardScreen');
-    //     }
-    // }, [isAuth]);
+
+    useEffect(() => {
+        if (errorMessage){
+            console.log("Hola desde use")
+            setSnackbarMessage(errorMessage);
+            setSnackbarVisible(true);
+        }
+        if (isAuth) {
+            console.log("Autenticación exitosa", isAuth);
+            navigation.navigate('DashboardScreen');
+        }
+    }, [isAuth, errorMessage]);
 
     const togglePasswordVisibility = () => {
         setPasswordVisibility(!passwordVisibility);
@@ -31,23 +44,53 @@ export const LoginScreen = ({navigation}) => {
     };
 
 
-    const onLoginPressed = async () => {
+    const onRegisterPressed = async () => {
         if (email.trim() === "" || pw.trim() === "") {
-          setSnackbarMessage("Por favor, ingrese su email y contraseña.");
+          setSnackbarMessage("Por favor, ingrese todos los campos");
           setSnackbarVisible(true);
           return;
         }
+
+
+        const emailError = emailValidator(email)
+        if (emailError){
+            setSnackbarMessage(emailError);
+            setSnackbarVisible(true);
+            return;
+        }
+
+        if (pw != pwValidation){
+            setSnackbarMessage("Contraseñas no coinciden");
+            setSnackbarVisible(true);
+            return;
+        }
     
         try {
-          const success = await login(email, pw);
+          const successRegister = await register(email.trim(), pw.trim(), pwValidation.trim(),fullName.trim());
 
-          if (!success) {
-            setSnackbarMessage("Credenciales incorrectas o problema al iniciar sesión.");
+          if (!successRegister) {
+            setSnackbarMessage("Ocurrio un error durante la creación de su cuenta");
             setSnackbarVisible(true);
             return;
           }
 
-          navigation.navigate('DashboardScreen');
+          const successLogin = await login(email,pw);
+
+          if (!successLogin){
+            setSnackbarMessage("La cuenta se creo satisfactoriamente, pero hubo un error al iniciar sesión ")
+            setSnackbarVisible(true);
+          }
+
+          //Dada la naturaleza asincronica, existen situaciones donde se creo la cuenta y esta autenticado
+          //pero todavia no se ha actualizado, entonces pasare a utilizar useEffect
+        //   console.log("Estoy aqui")
+        //   console.log("Valor del estado :", isAuth)
+
+        //   if (isAuth){
+        //     console.log("Verificando ")
+        //       navigation.navigate('DashboardScreen');
+        //   }
+
 
         } catch (error) {
             console.error('Login error:', error);
@@ -63,34 +106,46 @@ export const LoginScreen = ({navigation}) => {
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS ==='ios'? 'padding' : 'height'}  >
      <View style={styles.containerHeader} >
         {/* <UserLogin></UserLogin> */}
-        <LogoFast></LogoFast>
-        <Text style={styles.title}>Iniciar Sesion</Text>
+        <BackButton goBack={navigation.goBack}/>
+        <Text style={styles.title}>Registrarme</Text>
+        <Text style={{fontSize:16, color: 'white'}}>Registrate para acceder a la app</Text>
 
 
      </View>
-     <ScrollView style={{backgroundColor:'white'}} >
+     <ScrollView style={{backgroundColor:'white', borderRadius:14}} >
 
      <View style={styles.containerInfo}>
+        <View style={styles.credentialsEmail}>
+            <View ><Text style={styles.labelCredentials}>Nombre completo</Text></View>
+            <TextInput style={styles.TextInput} onChangeText={setFullName} value={fullName}></TextInput>
+        </View>
         <View style={styles.credentialsEmail}>
             <View ><Text style={styles.labelCredentials}>Email</Text></View>
             <TextInput style={styles.TextInput} onChangeText={setEmail} value={email}></TextInput>
         </View>
         <View style={styles.credentialsPw}>
             <View ><Text style={styles.labelCredentials}>Contraseña</Text></View>
-            <TextInput style={styles.TextInput} onChangeText={setPw} value={pw} secureTextEntry={passwordVisibility} right={<TextInput.Icon icon={passwordIcon} onPress={togglePasswordVisibility}/>}></TextInput>
+            <TextInput 
+            style={styles.TextInput} 
+            onChangeText={setPw} 
+            value={pw} 
+            
+            secureTextEntry={passwordVisibility} 
+            right={<TextInput.Icon icon={passwordIcon} onPress={togglePasswordVisibility}/>}>
+
+            </TextInput>
         </View>
-        <Pressable>
-            <Text style ={styles.forgotPw}>Olvide mi contraseña</Text>
-        </Pressable>
-        <Button mode='contained' style={styles.button} onPress={onLoginPressed}>
+        <View style={styles.credentialsPw}>
+            <View ><Text style={styles.labelCredentials}>Confirmar contraseña</Text></View>
+            <TextInput style={styles.TextInput} onChangeText={setPwValidation} value={pwValidation} secureTextEntry={passwordVisibility} right={<TextInput.Icon icon={passwordIcon} onPress={togglePasswordVisibility}/>}></TextInput>
+        </View>
+
+        
+       
+        <Button mode='contained' style={styles.button} onPress={onRegisterPressed}>
             <Text>Entrar</Text>
         </Button>
-        <Pressable>
-            <Text style ={styles.labelNotAccount}>No tienes cuenta?</Text>
-        </Pressable>
-        <Pressable onPress={()=>navigation.navigate('RegisterScreen')}>
-            <Text style ={styles.newAccount}>Registrarme</Text>
-        </Pressable>
+        
        
     </View>
      </ScrollView>
@@ -100,7 +155,7 @@ export const LoginScreen = ({navigation}) => {
      <Snackbar
     visible={snackbarVisible}
     onDismiss={() => setSnackbarVisible(false)}
-    duration={3000} // Duración en milisegundos antes de ocultarse automáticamente
+    duration={3000}
     >
     {snackbarMessage}   
     </Snackbar>
@@ -192,7 +247,5 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         marginTop: 13
     }
-
-
 
 })
