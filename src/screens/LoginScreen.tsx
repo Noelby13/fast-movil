@@ -47,7 +47,12 @@ export const LoginScreen = ({navigation}) => {
             return;
           }
 
-          navigation.navigate('DashboardScreen');
+        // Usamos reset para navegar al DashboardScreen y eliminar el historial de navegación
+        navigation.reset({
+            index: 0, // Esto define el índice de la nueva ruta en el stack, que es 0 ya que será la única pantalla en el stack.
+            routes: [{name: 'DashboardScreen'}], // Esto define las rutas del nuevo estado del stack de navegación.
+        });
+  
 
         } catch (error) {
             console.error('Login error:', error);

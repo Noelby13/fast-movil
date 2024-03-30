@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@react-navigation/drawer": "^6.6.15",
     "@react-navigation/native": "^6.1.16",
     "@react-navigation/native-stack": "^6.9.25",
     "@react-navigation/stack": "^6.3.28",
@@ -24,7 +25,8 @@
     "react-native-screens": "~3.29.0",
     "react-native-svg": "14.1.0",
     "typescript": "^5.3.0",
-    "zustand": "^4.5.2"
+    "zustand": "^4.5.2",
+    "react-native-reanimated": "~3.6.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
