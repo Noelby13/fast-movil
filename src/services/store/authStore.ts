@@ -58,6 +58,7 @@ interface UserRecord {
             identity: email,
             password: password,
           });
+          console.log(email, '-', password)
       
           const response = await fetch('https://fast.pockethost.io/api/collections/usersAdmin/auth-with-password', {
             method: 'POST',

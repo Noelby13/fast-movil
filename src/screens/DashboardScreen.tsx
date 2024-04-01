@@ -1,16 +1,18 @@
 import React, { useState } from 'react'
-import { Text, View, Image , StyleSheet} from 'react-native'
+import { Text, View, Image , StyleSheet, TouchableOpacity,} from 'react-native'
 import { useAuthStore } from '../services/store/authStore'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { AntDesign } from '@expo/vector-icons';
-import { Searchbar } from 'react-native-paper';
+import { Searchbar, Card,  Button} from 'react-native-paper';
+import { ScrollView } from 'react-native-gesture-handler';
+import { useCartStore } from '../services/store/cartStore';
 
 
 export const DashboardScreen = ({navigation}) => {
 
    const {user}= useAuthStore()
    const [searchQuery, setSearchQuery] = useState('')
-   const [qtCart, setQtCart] = useState(0)
+   const {qt, setQt} = useCartStore()
    const [isVisible, setIsVisible]=useState(true)
 
    const getImage =(collectionId,id,imagen)=>{
@@ -20,11 +22,7 @@ export const DashboardScreen = ({navigation}) => {
    const imageUrl = getImage(user.collectionId, user.id, user.avatar);
    
    const search = ()=>{
-    if (searchQuery==''){
-      setIsVisible(true)
-    }else{
-      setIsVisible(false)
-    }
+
    }// Reemplaza 'collectionId' y 'id' según corresponda
 
 
@@ -45,7 +43,7 @@ export const DashboardScreen = ({navigation}) => {
             <View style={styles.shoppingcart_container}>
               <View style={styles.shoppingcartIcon}>
                 <AntDesign name="shoppingcart" size={28} color="white" />
-                {qtCart>0 &&(<View style={styles.cartCount} ><Text style={styles.cartCount_text}>{qtCart}</Text></View>)}
+                {qt>0 &&(<View style={styles.cartCount} ><Text style={styles.cartCount_text}>{qt}</Text></View>)}
               </View>
             </View>
           </View>
@@ -61,13 +59,41 @@ export const DashboardScreen = ({navigation}) => {
               onChange={search}
             />
           </View>
-          {isVisible==true &&(
-             <View>
-             <Text>Textorandom</Text>
-             <Text>Textorandom</Text>
-             <Text>Textorandom</Text>
-           </View> 
-          )}
+          <ScrollView style={{marginTop:30}}>
+            <View><Text >Kioscos abiertos</Text></View>
+            <TouchableOpacity onPress={()=>navigation.navigate('ProductCard')}>
+              <Card style={styles.cardProduct} elevation={2}>
+                <Card.Cover source={{ uri: 'https://i.pinimg.com/564x/ba/64/fc/ba64fcc24e042f9fc5d6a960c2bc41eb.jpg' } } style={{height:140}}/>
+                <Card.Title title="McDonald's" subtitle="Hamburguesas -Pollo -Helado" titleStyle={{marginTop:10, fontWeight:'bold'}} />
+                <Card.Content style={{flexDirection:'row', alignItems:'center'}}>
+                  <AntDesign name="staro" size={20} color="#FF7622" style={{marginTop:3,}} />
+                  <Text style={{fontSize:14, fontWeight:'bold', }}> 4.7</Text>
+                </Card.Content>
+              </Card>
+            </TouchableOpacity>
+
+            <TouchableOpacity>
+              <Card style={styles.cardProduct} elevation={2}>
+                <Card.Cover source={{ uri: 'https://www.pepper-design.net/system/projects/main_images/000/000/052/medium/WhatsApp_Image_2020-09-09_at_3.22.24_PM.jpeg?1599688580' } } style={{height:140}}/>
+                <Card.Title title="Guapollón" subtitle="Pollo a precios de universitarios!" titleStyle={{marginTop:10, fontWeight:'bold'}} />
+                <Card.Content style={{flexDirection:'row', alignItems:'center',}}>
+                  <AntDesign name="staro" size={20} color="#FF7622" style={{marginTop:3,}} />
+                  <Text style={{fontSize:14, fontWeight:'bold',paddingTop:3}}> 4.9</Text>
+                </Card.Content>
+              </Card>
+            </TouchableOpacity>
+
+            <Card style={styles.cardProduct} elevation={2}>
+              <Card.Cover source={{ uri: 'https://i.pinimg.com/564x/ba/64/fc/ba64fcc24e042f9fc5d6a960c2bc41eb.jpg' } } style={{height:140}}/>
+              <Card.Title title="McDonald's" subtitle="Hamburguesas -Pollo -Helado" titleStyle={{marginTop:10, fontWeight:'bold'}} />
+              <Card.Content style={{flexDirection:'row', alignItems:'center'}}>
+                <AntDesign name="staro" size={20} color="#FF7622" style={{marginTop:3,}} />
+                <Text style={{fontSize:14, fontWeight:'bold', }}> 4.7</Text>
+              </Card.Content>
+            </Card>
+
+          </ScrollView>
+ 
          
       </View>
     </SafeAreaView>
@@ -146,6 +172,13 @@ const styles = StyleSheet.create({
   },
   searchContainer:{
     marginTop:30
+  },
+  cardProduct:{
+    width:'100%',
+    height:'auto',
+    backgroundColor:'#fff',
+    marginTop:10
+
   }
 
 })

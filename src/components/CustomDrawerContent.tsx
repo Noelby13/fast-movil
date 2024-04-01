@@ -2,6 +2,8 @@ import React from 'react';
 import { View, Image, StyleSheet, Text } from 'react-native';
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import { useAuthStore } from '../services/store/authStore';
+import { Avatar } from 'react-native-paper';
+
 
 export const CustomDrawerContent = (props) => {
   const { user } = useAuthStore();
@@ -9,13 +11,20 @@ export const CustomDrawerContent = (props) => {
 
   return (
     <DrawerContentScrollView {...props}>
-      <View style={styles.drawerHeader}>
-        {user.avatar && (
+      <View style={styles.drawerHeader} >
+        {user.avatar ? (
           <Image
             source={{ uri: imageUrl }}
             style={styles.profileImage}
           />
-        )}
+        ):(
+          <Avatar.Text 
+            size={100} 
+            label={user.name.substring(0, 2).toUpperCase()} 
+            style={styles.profileImage} // Si necesitas estilos específicos para Avatar.Text, ajusta aquí
+          />
+          )
+        }
         <Text style={styles.userName}>{user.name}</Text>
       </View>
       <DrawerItemList {...props} />
