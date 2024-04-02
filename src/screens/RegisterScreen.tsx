@@ -33,8 +33,10 @@ export const RegisterScreen = ({navigation}) => {
             setSnackbarVisible(true);
         }
         if (isAuth) {
-            console.log("Autenticación exitosa", isAuth);
-            navigation.navigate('DashboardScreen');
+            navigation.reset({
+                index: 0, // Esto define el índice de la nueva ruta en el stack, que es 0 ya que será la única pantalla en el stack.
+                routes: [{name: 'DashboardScreen'}], // Esto define las rutas del nuevo estado del stack de navegación.
+            });
         }
     }, [isAuth, errorMessage]);
 

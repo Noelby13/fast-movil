@@ -1,16 +1,22 @@
 import React from 'react';
-import { View, Image, StyleSheet, Text } from 'react-native';
-import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
+import { View, Image, StyleSheet, Text, TouchableOpacity, Linking } from 'react-native';
+import { DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
 import { useAuthStore } from '../services/store/authStore';
-import { Avatar } from 'react-native-paper';
+import { Avatar , Drawer} from 'react-native-paper';
+import CustomDrawerItem from './CustomDrawerItem';
+import UserIcon from '../components/UserIcon';
 
 
 export const CustomDrawerContent = (props) => {
   const { user } = useAuthStore();
   const imageUrl = `https://fast.pockethost.io/api/files/${user.collectionId}/${user.id}/${user.avatar}`;
 
+  const navigateToScreen = (screenName) => {
+    props.navigation.navigate(screenName);
+  };
+
   return (
-    <DrawerContentScrollView {...props}>
+    <DrawerContentScrollView {...props} style={styles.drawer}>
       <View style={styles.drawerHeader} >
         {user.avatar ? (
           <Image
@@ -27,12 +33,22 @@ export const CustomDrawerContent = (props) => {
         }
         <Text style={styles.userName}>{user.name}</Text>
       </View>
-      <DrawerItemList {...props} />
+      <DrawerItem
+        label="Help"
+        onPress={() => Linking.openURL('https://mywebsite.com/help')}
+      />
+
+    
+      {/* <DrawerItemList {...props} /> */}
     </DrawerContentScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  drawer:{
+
+
+  },
   drawerHeader: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -48,4 +64,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  customDrawerItem: {
+    padding: 10,
+    justifyContent: 'center',
+    // Estilos adicionales según sea necesario
+  },
+  options:{
+    padding:10,
+    backgroundColor:'#F6F8FA'
+  }
 });

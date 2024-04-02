@@ -12,6 +12,7 @@ import { RegisterScreen } from "./src/screens/RegisterScreen";
 import { CustomDrawerContent } from './src/components/CustomDrawerContent';
 import SettingsScreen from './src/screens/SettingsScreen';
 import ProductScreen from './src/screens/ProductScreen';
+import RestaurantScreen from './src/screens/RestaurantScreen';
 
 const Stack = createStackNavigator()
 const Drawer = createDrawerNavigator();
@@ -19,10 +20,10 @@ const Drawer = createDrawerNavigator();
 function DashboardDrawer() {
   return (
     <Drawer.Navigator initialRouteName="Dashboard" screenOptions={{headerShown:false}} drawerContent={props => <CustomDrawerContent {...props} />} >
-      <Drawer.Screen name="Dashboard" component={DashboardScreen}  />
+      <Drawer.Screen name="Dashboard" component={DashboardScreen} />
       <Drawer.Screen name="SettingScreen" component={SettingsScreen}  />
       <Drawer.Screen name="ProductCard" component={ProductScreen}  />
-
+      <Drawer.Screen name="RestaurantScreen" component={RestaurantScreen}  />
 
       {/* Puedes agregar más pantallas al drawer si lo deseas */}
     </Drawer.Navigator>

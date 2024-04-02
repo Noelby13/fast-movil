@@ -38,7 +38,6 @@ export const DashboardScreen = ({navigation}) => {
             <View style={styles.textContainer}>
               <Text style={styles.textWelcome}>HOLA {user.name.toLocaleUpperCase()}</Text>
               <Text style={styles.textWelcome_subtitle}>Bienvenidos a FAST</Text>
-              
             </View>
             <View style={styles.shoppingcart_container}>
               <View style={styles.shoppingcartIcon}>
