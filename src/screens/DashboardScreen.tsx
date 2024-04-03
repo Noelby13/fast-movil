@@ -1,11 +1,12 @@
-import React, { useState } from 'react'
-import { Text, View, Image , StyleSheet, TouchableOpacity,} from 'react-native'
+import React, { useState , useEffect} from 'react'
+import { Text, View, Image , StyleSheet, TouchableOpacity,FlatList, ActivityIndicator,} from 'react-native'
 import { useAuthStore } from '../services/store/authStore'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { AntDesign } from '@expo/vector-icons';
 import { Searchbar, Card,  Button} from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useCartStore } from '../services/store/cartStore';
+import { useRestaurantStore } from '../services/store/RestaurantStore';
 
 
 export const DashboardScreen = ({navigation}) => {
@@ -14,6 +15,39 @@ export const DashboardScreen = ({navigation}) => {
    const [searchQuery, setSearchQuery] = useState('')
    const {qt, setQt} = useCartStore()
    const [isVisible, setIsVisible]=useState(true)
+   const [kiosks, setKiosks] = useState([]);
+   const [isLoading, setIsLoading] = useState(false);
+   const restaurants = useRestaurantStore((state)=> state.restaurants)
+   useEffect(() => {
+    fetchKiosks();
+    }, []);
+
+    const fetchKiosks = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch('https://fast.pockethost.io/api/collections/tienda/records');
+        const data = await response.json();
+        setKiosks(data.items);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        // Manejar el error adecuadamente en tu aplicación
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    const renderKioskCard = ({item}) => (
+      <TouchableOpacity activeOpacity={1} key={item.id} onPress={() => navigation.navigate('ProductCard')}>
+        <Card style={styles.cardProduct} elevation={2}>
+          <Card.Cover source={{ uri: `https://fast.pockethost.io/api/files/${item.collectionId}/${item.id}/${item.imagen}` }} style={{ height: 140 }} />
+          <Card.Title title={item.nombre} subtitle={item.direccion} titleStyle={{ marginTop: 10, fontWeight: 'bold' }} />
+          <Card.Content style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <AntDesign name="staro" size={20} color="#FF7622" style={{ marginTop: 3, }} />
+            <Text style={{ fontSize: 14, fontWeight: 'bold' }}> 4.7</Text> 
+          </Card.Content>
+        </Card>
+      </TouchableOpacity>
+    );
 
    const getImage =(collectionId,id,imagen)=>{
     return `https://fast.pockethost.io/api/files/${collectionId}/${id}/${imagen}`
@@ -24,6 +58,7 @@ export const DashboardScreen = ({navigation}) => {
    const search = ()=>{
 
    }// Reemplaza 'collectionId' y 'id' según corresponda
+
 
 
   return (
@@ -58,42 +93,22 @@ export const DashboardScreen = ({navigation}) => {
               onChange={search}
             />
           </View>
-          <ScrollView style={{marginTop:30}}>
+          <View style={{marginTop:30, }} >
             <View><Text >Kioscos abiertos</Text></View>
-            <TouchableOpacity onPress={()=>navigation.navigate('ProductCard')}>
-              <Card style={styles.cardProduct} elevation={2}>
-                <Card.Cover source={{ uri: 'https://i.pinimg.com/564x/ba/64/fc/ba64fcc24e042f9fc5d6a960c2bc41eb.jpg' } } style={{height:140}}/>
-                <Card.Title title="McDonald's" subtitle="Hamburguesas -Pollo -Helado" titleStyle={{marginTop:10, fontWeight:'bold'}} />
-                <Card.Content style={{flexDirection:'row', alignItems:'center'}}>
-                  <AntDesign name="staro" size={20} color="#FF7622" style={{marginTop:3,}} />
-                  <Text style={{fontSize:14, fontWeight:'bold', }}> 4.7</Text>
-                </Card.Content>
-              </Card>
-            </TouchableOpacity>
-
-            <TouchableOpacity>
-              <Card style={styles.cardProduct} elevation={2}>
-                <Card.Cover source={{ uri: 'https://www.pepper-design.net/system/projects/main_images/000/000/052/medium/WhatsApp_Image_2020-09-09_at_3.22.24_PM.jpeg?1599688580' } } style={{height:140}}/>
-                <Card.Title title="Guapollón" subtitle="Pollo a precios de universitarios!" titleStyle={{marginTop:10, fontWeight:'bold'}} />
-                <Card.Content style={{flexDirection:'row', alignItems:'center',}}>
-                  <AntDesign name="staro" size={20} color="#FF7622" style={{marginTop:3,}} />
-                  <Text style={{fontSize:14, fontWeight:'bold',paddingTop:3}}> 4.9</Text>
-                </Card.Content>
-              </Card>
-            </TouchableOpacity>
-
-            <Card style={styles.cardProduct} elevation={2}>
-              <Card.Cover source={{ uri: 'https://i.pinimg.com/564x/ba/64/fc/ba64fcc24e042f9fc5d6a960c2bc41eb.jpg' } } style={{height:140}}/>
-              <Card.Title title="McDonald's" subtitle="Hamburguesas -Pollo -Helado" titleStyle={{marginTop:10, fontWeight:'bold'}} />
-              <Card.Content style={{flexDirection:'row', alignItems:'center'}}>
-                <AntDesign name="staro" size={20} color="#FF7622" style={{marginTop:3,}} />
-                <Text style={{fontSize:14, fontWeight:'bold', }}> 4.7</Text>
-              </Card.Content>
-            </Card>
-
-          </ScrollView>
+            <FlatList
+              data={restaurants}
+              renderItem={renderKioskCard}
+              keyExtractor={(item) => item.id.toString()}
+              contentContainerStyle={{ paddingBottom: 200 }}
+              showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}
+              alwaysBounceHorizontal={false}
+              alwaysBounceVertical={false}
+              bounces={false}
+              overScrollMode="never"
+            />
+          </View>
  
-         
       </View>
     </SafeAreaView>
   )

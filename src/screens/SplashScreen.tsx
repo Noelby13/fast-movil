@@ -1,14 +1,22 @@
 import React, { useEffect } from 'react';
 import { BackGround } from '../components/BackGround';
 import { LogoFast } from '../components/LogoFast';
+import { useRestaurantStore } from '../services/store/RestaurantStore';
 
 export const SplashScreen = ({ navigation }) => {
+  const loadRestaurants = useRestaurantStore((state) => state.loadRestaurants);
+
   useEffect(() => {
-    const timer = setTimeout(() => {
+    // Iniciar la carga de los datos de los restaurantes
+    const loadData = async () => {
+      await loadRestaurants(); // Carga la primera página con 10 restaurantes, ajusta según sea necesario
+      // Navegar a la siguiente pantalla una vez cargados los datos
       navigation.navigate('LoginScreen');
-    }, 800); // Cambiado a 1000 milisegundos para dar tiempo a ver la pantalla
-    return () => clearTimeout(timer); // Limpieza al desmontar
-  }, [navigation]);
+    };
+
+    loadData();
+    console.log('Hola')
+  }, [navigation, loadRestaurants]);
 
   return (
     <BackGround>

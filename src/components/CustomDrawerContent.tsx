@@ -37,6 +37,9 @@ export const CustomDrawerContent = (props) => {
         label="Help"
         onPress={() => Linking.openURL('https://mywebsite.com/help')}
       />
+      <TouchableOpacity onPress={()=>navigateToScreen('RestaurantScreen')}>
+        <Text>Restaurante- Screen</Text>
+      </TouchableOpacity>
 
     
       {/* <DrawerItemList {...props} /> */}
