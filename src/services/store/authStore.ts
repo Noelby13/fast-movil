@@ -6,9 +6,11 @@ interface ErrorResponse {
   message: string;
   data: Data;
 }
+
 interface Data {
   email: Email;
 }
+
 interface Email {
   code: string;
   message: string;
@@ -28,13 +30,13 @@ interface UserRecord {
     verified: boolean;
   }
   
-  interface ApiResponse {
+interface ApiResponse {
     record: UserRecord;
     token: string;
   }
 
 
-  interface UserState {
+interface UserState {
     user: UserRecord | null;
     token: string | null;
     isAuthenticated: boolean;

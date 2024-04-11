@@ -1,14 +1,17 @@
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
+import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import { useAuthStore } from '../services/store/authStore'
 import { Ionicons , AntDesign} from '@expo/vector-icons';
 import BackButton from '../components/BackButton';
 import { useCartStore } from '../services/store/cartStore';
-import { Button } from 'react-native-paper';
+import { Button, Card } from 'react-native-paper';
 
 export default function ProductScreen({navigation}) {
     const {user}= useAuthStore()
     const {qt, setQt, removeQt} = useCartStore()
+
+
+
 
 
   return (

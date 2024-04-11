@@ -73,7 +73,7 @@ export const LoginScreen = ({navigation}) => {
 
 
      </View>
-     <ScrollView style={{backgroundColor:'white'}} >
+     <ScrollView style={{backgroundColor:'white', borderRadius:10}} >
 
      <View style={styles.containerInfo}>
         <View style={styles.credentialsEmail}>

@@ -18,6 +18,8 @@ export const DashboardScreen = ({navigation}) => {
    const [kiosks, setKiosks] = useState([]);
    const [isLoading, setIsLoading] = useState(false);
    const restaurants = useRestaurantStore((state)=> state.restaurants)
+   const selectRestaurant = useRestaurantStore((state)=> state.selectResturant)
+
    useEffect(() => {
     fetchKiosks();
     }, []);
@@ -36,9 +38,17 @@ export const DashboardScreen = ({navigation}) => {
       }
     };
 
+    const handleCardOnPress = async (item) => {
+      const result = await selectRestaurant(item);
+      console.log("aqui estamos");
+      if (result){
+        navigation.navigate('RestaurantScreen');
+      }
+    };
+
     const renderKioskCard = ({item}) => (
-      <TouchableOpacity activeOpacity={1} key={item.id} onPress={() => navigation.navigate('ProductCard')}>
-        <Card style={styles.cardProduct} elevation={2}>
+      <TouchableOpacity activeOpacity={1} key={item.id} onPress={() => handleCardOnPress(item) } style={{paddingHorizontal:0}}>
+        <Card style={styles.cardProduct} elevation={1}>
           <Card.Cover source={{ uri: `https://fast.pockethost.io/api/files/${item.collectionId}/${item.id}/${item.imagen}` }} style={{ height: 140 }} />
           <Card.Title title={item.nombre} subtitle={item.direccion} titleStyle={{ marginTop: 10, fontWeight: 'bold' }} />
           <Card.Content style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -106,6 +116,7 @@ export const DashboardScreen = ({navigation}) => {
               alwaysBounceVertical={false}
               bounces={false}
               overScrollMode="never"
+            
             />
           </View>
  

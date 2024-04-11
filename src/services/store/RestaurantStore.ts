@@ -24,14 +24,17 @@ interface Item {
 
 interface RestaurantState {
     restaurants: Item[];
+    selectedRestaurant: Item | null;
     totalPages: number;
     totalItems: number;
     loadRestaurants: () => Promise<void>;
+    selectResturant: (item:Item)=>Promise<boolean>;
   }
   
 
 export const useRestaurantStore = create<RestaurantState>((set) => ({
     restaurants: [],
+    selectedRestaurant:null,
     totalPages: 0,
     totalItems: 0,
     // Función para cargar la información de los restaurantes
@@ -57,11 +60,16 @@ export const useRestaurantStore = create<RestaurantState>((set) => ({
           totalPages: data.totalPages,
           totalItems: data.totalItems,
         });
+        console.log("información de restaurantes cargadas")
   
       } catch (error) {
         console.error('Error loading restaurants:', error);
         // Aquí podrías manejar el estado de error, como actualizar una variable de estado para mostrar un mensaje de error en la UI
       }
     },
+    selectResturant:async (item:Item)=>{
+      set({selectedRestaurant:item})
+      return true;
+    }
   }));
   
