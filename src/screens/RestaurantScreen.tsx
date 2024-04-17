@@ -134,7 +134,6 @@ export default function RestaurantScreen() {
   const goBack = () => {
     if (removeRestaurantSelected()) {
       setProducts([]); // Limpia el estado de productos
-
       navigation.goBack();
     }
   };
