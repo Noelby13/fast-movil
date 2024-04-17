@@ -29,8 +29,17 @@ interface RestaurantState {
     totalItems: number;
     loadRestaurants: () => Promise<void>;
     selectResturant: (item:Item)=>Promise<boolean>;
+    removeRestaurantSelected: ()=>Boolean;
   }
-  
+  export interface Pokedex {
+    page:       number;
+    perPage:    number;
+    totalItems: number;
+    totalPages: number;
+    items:      Item[];
+}
+
+
 
 export const useRestaurantStore = create<RestaurantState>((set) => ({
     restaurants: [],
@@ -70,6 +79,11 @@ export const useRestaurantStore = create<RestaurantState>((set) => ({
     selectResturant:async (item:Item)=>{
       set({selectedRestaurant:item})
       return true;
+    },
+    removeRestaurantSelected: ()=>{
+      set({selectedRestaurant:null})
+      return true
     }
+
   }));
   

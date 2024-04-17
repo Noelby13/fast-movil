@@ -3,6 +3,7 @@ import { Text, View, Image , StyleSheet, TouchableOpacity,FlatList, ActivityIndi
 import { useAuthStore } from '../services/store/authStore'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { AntDesign } from '@expo/vector-icons';
+import { Entypo } from '@expo/vector-icons';
 import { Searchbar, Card,  Button} from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useCartStore } from '../services/store/cartStore';
@@ -40,20 +41,25 @@ export const DashboardScreen = ({navigation}) => {
 
     const handleCardOnPress = async (item) => {
       const result = await selectRestaurant(item);
-      console.log("aqui estamos");
+      console.log("Restaurante seleccionado: ", item.nombre);
       if (result){
         navigation.navigate('RestaurantScreen');
       }
     };
 
     const renderKioskCard = ({item}) => (
-      <TouchableOpacity activeOpacity={1} key={item.id} onPress={() => handleCardOnPress(item) } style={{paddingHorizontal:0}}>
+      <TouchableOpacity activeOpacity={1} key={item.id} onPress={() => handleCardOnPress(item) } style={{paddingHorizontal:0, }}>
         <Card style={styles.cardProduct} elevation={1}>
           <Card.Cover source={{ uri: `https://fast.pockethost.io/api/files/${item.collectionId}/${item.id}/${item.imagen}` }} style={{ height: 140 }} />
           <Card.Title title={item.nombre} subtitle={item.direccion} titleStyle={{ marginTop: 10, fontWeight: 'bold' }} />
           <Card.Content style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <AntDesign name="staro" size={20} color="#FF7622" style={{ marginTop: 3, }} />
-            <Text style={{ fontSize: 14, fontWeight: 'bold' }}> 4.7</Text> 
+            <View style={{flexDirection:'row', alignItems:'center'}}>
+              <AntDesign name="staro" size={20} color="#FF7622"  />
+              <Text style={{ fontSize: 14, fontWeight: 'bold' }}> 4.7</Text> 
+              <Entypo name="time-slot" size={19} color="#FF7622" style={{marginLeft:10}} />
+              <Text style={{ fontSize: 14, marginLeft:0 }}> 20 min</Text> 
+            </View>
+
           </Card.Content>
         </Card>
       </TouchableOpacity>
@@ -77,9 +83,9 @@ export const DashboardScreen = ({navigation}) => {
           {/* <Text>Hola {user.name}</Text>
           {user.avatar && <Image source={{ uri: imageUrl }} style={{ width: 100, height: 100 , borderRadius:100}} />} */}
           <View style={styles.header}>
-            <View style={styles.menuIcon}>
-              <AntDesign name="bars" size={24} color="#181C2E" onPress={()=>navigation.openDrawer()} />
-            </View>
+            <TouchableOpacity style={styles.menuIcon} onPress={()=>navigation.openDrawer()}>
+              <AntDesign name="bars" size={24} color="#181C2E"  />
+            </TouchableOpacity>
             <View style={styles.textContainer}>
               <Text style={styles.textWelcome}>HOLA {user.name.toLocaleUpperCase()}</Text>
               <Text style={styles.textWelcome_subtitle}>Bienvenidos a FAST</Text>
@@ -104,7 +110,7 @@ export const DashboardScreen = ({navigation}) => {
             />
           </View>
           <View style={{marginTop:30, }} >
-            <View><Text >Kioscos abiertos</Text></View>
+            <View  style={{paddingLeft: 10, paddingRight:4}}><Text >Kioscos abiertos</Text></View>
             <FlatList
               data={restaurants}
               renderItem={renderKioskCard}
@@ -116,7 +122,7 @@ export const DashboardScreen = ({navigation}) => {
               alwaysBounceVertical={false}
               bounces={false}
               overScrollMode="never"
-            
+              style={{paddingLeft: 6, paddingRight:6, }}            
             />
           </View>
  
@@ -129,8 +135,8 @@ const styles = StyleSheet.create({
   backgroundContainer: {
     flex: 1,
     backgroundColor:'#FFF',
-    paddingLeft: 8, 
-    paddingRight: 6
+    paddingLeft: 2, 
+    paddingRight: 2,
   },
   header:{
     width:'100%',
@@ -139,9 +145,12 @@ const styles = StyleSheet.create({
     height:49,
     flexDirection:'row',
     // justifyContent: 'space-between',
-    alignItems:'center' // Añade esta línea
+    alignItems:'center',// Añade esta línea
+    paddingLeft: 6,
+    paddingRight: 6, 
 
   },
+
   menuIcon:{
     width:45,
     height:45,
@@ -196,7 +205,9 @@ const styles = StyleSheet.create({
     fontWeight:'bold'
   },
   searchContainer:{
-    marginTop:30
+    marginTop:30,
+    paddingLeft:6,
+    paddingRight:6
   },
   cardProduct:{
     width:'100%',
