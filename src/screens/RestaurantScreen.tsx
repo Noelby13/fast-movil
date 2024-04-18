@@ -268,7 +268,9 @@ export default function RestaurantScreen() {
             renderItem={renderProductos}
             keyExtractor={(item) => item.id.toString()}
             numColumns={2}
-            contentContainerStyle={{alignItems:'center', justifyContent:'center', marginTop: 10, }}
+            contentContainerStyle={{alignItems:'center', justifyContent:'center', marginTop: 10, paddingBottom:30}}
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
           />
         </>
       )}
@@ -292,6 +294,7 @@ const styles = StyleSheet.create({
   product:{
     width: 170,
     height: 185,
+    marginTop:10,
     backgroundColor:'#fff',
     marginHorizontal: 10,
     borderRadius: 10,
