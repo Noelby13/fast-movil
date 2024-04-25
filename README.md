@@ -1,6 +1,7 @@
-# Aplicacion movil FAST
+# FAST
+<img src="https://img.shields.io/badge/STATUS-DEVELOPING%20-green">
 
-## Descripcion
+## Descripción
 
 FAST (Food Accessible for Swift Takeout) es una aplicacion movil desarrollada con React Native para ordenar pedidos de comida 
 en agrupaciones de restaurantes (Foodcourt). Transforma la experiencia del cliente y optimiza las operaciones facilitando la 
@@ -8,8 +9,10 @@ realizacion de pedidos, proporcionando catalogos de productos y en general optim
 
 ## Vista Previa
 
-![fast-movil-login](https://github.com/Noelby13/fast-movil/assets/103607877/20fa0d17-d8c7-436c-a715-4ea60caa356f)
-![fast-login-dashboard](https://github.com/Noelby13/fast-movil/assets/103607877/3570928a-ce2b-4ca7-8e52-e3e3c1428948)
+<img src="https://github.com/Noelby13/fast-movil/assets/103607877/23a2e08d-48ae-404f-b097-5b463f819194"/>
+<img src="https://github.com/Noelby13/fast-movil/assets/103607877/d377f36b-0e56-4640-8827-1b55131aba4c"/>
+<img src="https://github.com/Noelby13/fast-movil/assets/103607877/100b7d8f-24cd-420a-abec-fb205b272872"/>
+
 
 ## Uso del proyecto
 
@@ -24,6 +27,16 @@ Este proyecto fue creado mediante **Expo** y hace uso de las siguientes libreria
 - React Native Screens
 - React Native Svg
 - Zustand
+
+## Alcance Minimo (25/04/2024)
+- Conexion a la base de datos a travez de una API hosteada
+- Sincronizacion con aplicacion web de FAST (FAST Web)
+- Registro de Nuevo Usuario
+- Inicio de Sesion con autentificacion
+- Visualizacion del catalogo del Kiosko
+
+### Manual de Usuario
+https://drive.google.com/file/d/164ea07duJlYBViZJ9_zpJFwu3sSU9_F7/view?usp=sharing
 
 ### Instalar dependencias
 
@@ -40,16 +53,12 @@ Se puede empezar a ejecutar el proyecto con el siguiente comando:
 ```bash
 npm start
 ```
-Proporcionara la direccion y el QR para correr la aplicacion en Expo
+Proporcionara la direccion y el QR para correr la aplicacion en Expo Go
 
 ## Autores del proyecto
 
 El proyecto FAST ha sido desarrollado por:
-- Henry Noel Reyes Duarte
-- Luswi Danilo Torres Pomarez
-- Maria Paula Lopez Garcia
-- Emanuel Antonio Leite Hernandez
-
-## Estado del proyecto
-
-En progreso.
+- Henry Noel Reyes Duarte (@Noelby13)
+- Luswi Danilo Torres Pomarez (@G-Mann00)
+- Maria Paula Lopez Garcia (@garcia-lopez)
+- Emanuel Antonio Leite Hernandez (@Nana1423)
