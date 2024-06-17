@@ -13,6 +13,7 @@ import { CustomDrawerContent } from './src/components/CustomDrawerContent';
 import SettingsScreen from './src/screens/SettingsScreen';
 import ProductScreen from './src/screens/ProductScreen';
 import RestaurantScreen from './src/screens/RestaurantScreen';
+import ProductDescription from './src/screens/ProductDescription';
 
 const Stack = createStackNavigator()
 const Drawer = createDrawerNavigator();
@@ -40,6 +41,7 @@ export default function App() {
           <Stack.Screen name="LoginScreen" component={LoginScreen}></Stack.Screen>
           <Stack.Screen name="DashboardScreen" component={DashboardDrawer} screenOptions ={{headerShown:true}}></Stack.Screen>
           <Stack.Screen name="RegisterScreen" component={RegisterScreen} screenOptions ={{headerShown:true}}></Stack.Screen>
+          <Stack.Screen name="ProductDescription" component={ProductDescription} screenOptions ={{headerShown:true}}></Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>

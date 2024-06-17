@@ -232,8 +232,14 @@ export default function RestaurantScreen() {
     </Card>
   );
 
+  const handleProductPress = (item) => {
+    navigation.navigate('ProductDescription')
+
+  }
+
   const renderProductos = ({item}) => {
     return (
+      <TouchableOpacity onPress={()=> handleProductPress(item)}>
       <View style={styles.product} >
         <Image source={{uri:`https://fast.pockethost.io/api/files/${item.collectionId}/${item.id}/${item.Image}`}} style={styles.imageProduct} />
         <Text style={styles.textProduct}>{item.nombre}</Text>
@@ -244,9 +250,9 @@ export default function RestaurantScreen() {
           <Ionicons name="add-circle-sharp" size={30} color="#FF7622"   />          
           </TouchableOpacity>
         </View>
-
-       
       </View>
+      </TouchableOpacity>
+
     );
   }
   
