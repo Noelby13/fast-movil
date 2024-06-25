@@ -92,6 +92,8 @@ import {
   Image,
   FlatList,
   TouchableOpacity,
+  TouchableNativeFeedback,
+  Pressable,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -233,13 +235,21 @@ export default function RestaurantScreen() {
   );
 
   const handleProductPress = (item) => {
-    navigation.navigate('ProductDescription')
-
+    navigation.navigate('ProductDescription', {product: item});
   }
 
-  const renderProductos = ({item}) => {
+  const renderProductosIphone = ({item}) => {
     return (
-      <TouchableOpacity onPress={()=> handleProductPress(item)}>
+      <Pressable onPress={()=> handleProductPress(item)} 
+      style={({pressed}) => [
+        {
+          backgroundColor: pressed
+            ? 'rgb(210, 230, 255)'
+            : 'white'
+        },
+      ]}
+      
+      >
       <View style={styles.product} >
         <Image source={{uri:`https://fast.pockethost.io/api/files/${item.collectionId}/${item.id}/${item.Image}`}} style={styles.imageProduct} />
         <Text style={styles.textProduct}>{item.nombre}</Text>
@@ -251,10 +261,30 @@ export default function RestaurantScreen() {
           </TouchableOpacity>
         </View>
       </View>
-      </TouchableOpacity>
+      </Pressable>
 
     );
   }
+
+  const renderProductosAndroid = ({item}) => {
+    return (
+      <TouchableNativeFeedback onPress={()=> handleProductPress(item)}>
+      <View style={styles.product} >
+        <Image source={{uri:`https://fast.pockethost.io/api/files/${item.collectionId}/${item.id}/${item.Image}`}} style={styles.imageProduct} />
+        <Text style={styles.textProduct}>{item.nombre}</Text>
+        <Text style={styles.textDescription}>{item.descripcion}</Text>
+        <View style={styles.productInferiorPanel}>
+          <Text style={styles.productPrice}>${item.precio}</Text>
+          <TouchableOpacity style={styles.addProduct} onPress={()=>setQt(1)}>
+          <Ionicons name="add-circle-sharp" size={30} color="#FF7622"   />          
+          </TouchableOpacity>
+        </View>
+      </View>
+      </TouchableNativeFeedback>
+
+    );
+  }
+
   
   return (
     <SafeContainer >
@@ -271,7 +301,7 @@ export default function RestaurantScreen() {
 
           <FlatList
             data={products}
-            renderItem={renderProductos}
+            renderItem={ renderProductosIphone   }
             keyExtractor={(item) => item.id.toString()}
             numColumns={2}
             contentContainerStyle={{alignItems:'center', justifyContent:'center', marginTop: 10, paddingBottom:30}}
