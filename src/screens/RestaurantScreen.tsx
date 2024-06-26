@@ -215,39 +215,17 @@ export default function RestaurantScreen() {
     );
   };
 
-  const renderProduct = ({ item }) => (
-    <Card style={styles.cardProduct}>
-      <Card.Cover
-        source={{
-          uri: `https://fast.pockethost.io/api/files/${item.collectionId}/${item.id}/${item.Image}`,
-        }}
-        style={{ height: 140 }}
-      />
-      <Card.Title
-        title={item.nombre}
-        subtitle={`$${item.precio}`}
-        titleStyle={{ marginTop: 10, fontWeight: "bold" }}
-      />
-      <Card.Content style={{ flexDirection: "row", alignItems: "center" }}>
-        <AntDesign
-          name="staro"
-          size={20}
-          color="#FF7622"
-          style={{ marginTop: 3 }}
-        />
-        <Text style={{ fontSize: 14, fontWeight: "bold" }}> 4.7</Text>
-      </Card.Content>
-    </Card>
-  );
-
   const handleProductPress = (item) => {
     navigation.navigate("ProductDescription", { product: item });
   };
 
-  const renderProductosIphone = ({ item }) => {
+  const renderProducts = ({ item }) => {
     return (
-      <TouchableOpacity onPress={() => handleProductPress(item)}>
-        <View style={styles.product}>
+      <TouchableOpacity
+        style={styles.product}
+        onPress={() => handleProductPress(item)}
+      >
+        <View>
           <Image
             source={{
               uri: `https://fast.pockethost.io/api/files/${item.collectionId}/${item.id}/${item.Image}`,
@@ -272,42 +250,6 @@ export default function RestaurantScreen() {
     );
   };
 
-  const renderCarta = ({ item }) => {
-    if (Platform.OS === "android") {
-      return renderProductosAndroid({ item });
-    }
-    return renderProductosIphone({ item });
-  };
-
-  const renderProductosAndroid = ({ item }) => {
-    return (
-      <TouchableNativeFeedback onPress={() => handleProductPress(item)}>
-        <View style={styles.product}>
-          <Image
-            source={{
-              uri: `https://fast.pockethost.io/api/files/${item.collectionId}/${item.id}/${item.Image}`,
-            }}
-            style={styles.imageProduct}
-          />
-          <View style={styles.ProductDescription}>
-            <Text style={styles.textProduct}>{item.nombre}</Text>
-            <Text style={styles.textDescription}>{item.descripcion}</Text>
-          </View>
-
-          <View style={styles.productInferiorPanel}>
-            <Text style={styles.productPrice}>${item.precio}</Text>
-            <TouchableOpacity
-              style={styles.addProduct}
-              onPress={() => setQt(1)}
-            >
-              <Ionicons name="add-circle-sharp" size={30} color="#FF7622" />
-            </TouchableOpacity>
-          </View>
-        </View>
-      </TouchableNativeFeedback>
-    );
-  };
-
   return (
     <SafeContainer>
       <CustomHeader
@@ -318,25 +260,25 @@ export default function RestaurantScreen() {
         <ActivityIndicator size="large" color="#FF7622" />
       ) : (
         <>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          {renderKioskCard()}
-          <Divider style={styles.divider} />
+          <ScrollView showsVerticalScrollIndicator={false}>
+            {renderKioskCard()}
+            <Divider style={styles.divider} />
 
-          <FlatList
-            data={products}
-            renderItem={renderProductosIphone}
-            keyExtractor={(item) => item.id.toString()}
-            numColumns={2}
-            contentContainerStyle={{
-              alignItems: "center",
-              justifyContent: "center",
-              marginTop: 10,
-              paddingBottom: 30,
-            }}
-            showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}
-            scrollEnabled={false}
-          />
+            <FlatList
+              data={products}
+              renderItem={renderProducts}
+              keyExtractor={(item) => item.id.toString()}
+              numColumns={2}
+              contentContainerStyle={{
+                alignItems: "center",
+                justifyContent: "center",
+                marginTop: 10,
+                paddingBottom: 30,
+              }}
+              showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}
+              scrollEnabled={false}
+            />
           </ScrollView>
         </>
       )}
@@ -356,6 +298,7 @@ const styles = StyleSheet.create({
     shadowRadius: 0,
     elevation: 0, // Remove Shadow for Android
   },
+  touchable: {},
   product: {
     width: 170,
     height: 185,
@@ -371,7 +314,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
   },
   ProductDescription: {
-    flex:1,
+    flex: 1,
     width: "100%",
     paddingLeft: 10,
     // backgroundColor: "red",
@@ -380,6 +323,7 @@ const styles = StyleSheet.create({
     width: 114,
     height: 90,
     borderRadius: 10,
+    alignSelf: "center",
   },
   textProduct: {
     fontSize: 15,
