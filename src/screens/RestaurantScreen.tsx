@@ -94,6 +94,7 @@ import {
   TouchableOpacity,
   TouchableNativeFeedback,
   Pressable,
+  Platform,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -101,15 +102,16 @@ import CustomHeader from "../components/CustomHeader";
 import BackButton from "../components/CustomBackButton";
 import SafeContainer from "../components/SafeContainer";
 import ShoppingCart from "../components/ShoppingCart";
-import { Card } from "react-native-paper";
+import { Card, Divider } from "react-native-paper";
 import { AntDesign } from "@expo/vector-icons";
-import { Entypo } from '@expo/vector-icons';
+import { Entypo } from "@expo/vector-icons";
 
 import { useRestaurantStore } from "../services/store/RestaurantStore";
 import { useNavigation } from "@react-navigation/native";
 import { ScrollView } from "react-native-gesture-handler";
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons } from "@expo/vector-icons";
 import { useCartStore } from "../services/store/cartStore";
+import ProductDescription from "./ProductDescription";
 
 export default function RestaurantScreen() {
   const selectedRestaurant = useRestaurantStore(
@@ -121,7 +123,7 @@ export default function RestaurantScreen() {
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(true);
   const [products, setProducts] = useState([]);
- const setQt = useCartStore((state) => state.setQt);
+  const setQt = useCartStore((state) => state.setQt);
 
   useEffect(() => {
     const cargarProductos = async () => {
@@ -130,8 +132,7 @@ export default function RestaurantScreen() {
     if (selectedRestaurant) {
       cargarProductos();
     }
-  }, [selectedRestaurant]);  // Dependiendo de `selectedRestaurant` para recargar cuando cambie
-  
+  }, [selectedRestaurant]); // Dependiendo de `selectedRestaurant` para recargar cuando cambie
 
   const goBack = () => {
     if (removeRestaurantSelected()) {
@@ -198,12 +199,17 @@ export default function RestaurantScreen() {
           titleStyle={{ marginTop: 10, fontWeight: "bold" }}
         />
         <Card.Content style={{ flexDirection: "row", alignItems: "center" }}>
-        <View style={{flexDirection:'row', alignItems:'center'}}>
-              <AntDesign name="staro" size={20} color="#FF7622"  />
-              <Text style={{ fontSize: 14, fontWeight: 'bold' }}> 4.7</Text> 
-              <Entypo name="time-slot" size={19} color="#FF7622" style={{marginLeft:10}} />
-              <Text style={{ fontSize: 14, marginLeft:0 }}> 20 min</Text> 
-            </View>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <AntDesign name="staro" size={20} color="#FF7622" />
+            <Text style={{ fontSize: 14, fontWeight: "bold" }}> 4.7</Text>
+            <Entypo
+              name="time-slot"
+              size={19}
+              color="#FF7622"
+              style={{ marginLeft: 10 }}
+            />
+            <Text style={{ fontSize: 14, marginLeft: 0 }}> 20 min</Text>
+          </View>
         </Card.Content>
       </Card>
     );
@@ -229,66 +235,81 @@ export default function RestaurantScreen() {
           color="#FF7622"
           style={{ marginTop: 3 }}
         />
-        <Text style={{ fontSize: 14, fontWeight: "bold" }}> 4.7</Text> 
+        <Text style={{ fontSize: 14, fontWeight: "bold" }}> 4.7</Text>
       </Card.Content>
     </Card>
   );
 
   const handleProductPress = (item) => {
-    navigation.navigate('ProductDescription', {product: item});
-  }
+    navigation.navigate("ProductDescription", { product: item });
+  };
 
-  const renderProductosIphone = ({item}) => {
+  const renderProductosIphone = ({ item }) => {
     return (
-      <Pressable onPress={()=> handleProductPress(item)} 
-      style={({pressed}) => [
-        {
-          backgroundColor: pressed
-            ? 'rgb(210, 230, 255)'
-            : 'white'
-        },
-      ]}
-      
-      >
-      <View style={styles.product} >
-        <Image source={{uri:`https://fast.pockethost.io/api/files/${item.collectionId}/${item.id}/${item.Image}`}} style={styles.imageProduct} />
-        <Text style={styles.textProduct}>{item.nombre}</Text>
-        <Text style={styles.textDescription}>{item.descripcion}</Text>
-        <View style={styles.productInferiorPanel}>
-          <Text style={styles.productPrice}>${item.precio}</Text>
-          <TouchableOpacity style={styles.addProduct} onPress={()=>setQt(1)}>
-          <Ionicons name="add-circle-sharp" size={30} color="#FF7622"   />          
-          </TouchableOpacity>
+      <TouchableOpacity onPress={() => handleProductPress(item)}>
+        <View style={styles.product}>
+          <Image
+            source={{
+              uri: `https://fast.pockethost.io/api/files/${item.collectionId}/${item.id}/${item.Image}`,
+            }}
+            style={styles.imageProduct}
+          />
+          <View style={styles.ProductDescription}>
+            <Text style={styles.textProduct}>{item.nombre}</Text>
+            <Text style={styles.textDescription}>{item.descripcion}</Text>
+          </View>
+          <View style={styles.productInferiorPanel}>
+            <Text style={styles.productPrice}>${item.precio}</Text>
+            <TouchableOpacity
+              style={styles.addProduct}
+              onPress={() => setQt(1)}
+            >
+              <Ionicons name="add-circle-sharp" size={30} color="#FF7622" />
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-      </Pressable>
-
+      </TouchableOpacity>
     );
-  }
+  };
 
-  const renderProductosAndroid = ({item}) => {
+  const renderCarta = ({ item }) => {
+    if (Platform.OS === "android") {
+      return renderProductosAndroid({ item });
+    }
+    return renderProductosIphone({ item });
+  };
+
+  const renderProductosAndroid = ({ item }) => {
     return (
-      <TouchableNativeFeedback onPress={()=> handleProductPress(item)}>
-      <View style={styles.product} >
-        <Image source={{uri:`https://fast.pockethost.io/api/files/${item.collectionId}/${item.id}/${item.Image}`}} style={styles.imageProduct} />
-        <Text style={styles.textProduct}>{item.nombre}</Text>
-        <Text style={styles.textDescription}>{item.descripcion}</Text>
-        <View style={styles.productInferiorPanel}>
-          <Text style={styles.productPrice}>${item.precio}</Text>
-          <TouchableOpacity style={styles.addProduct} onPress={()=>setQt(1)}>
-          <Ionicons name="add-circle-sharp" size={30} color="#FF7622"   />          
-          </TouchableOpacity>
+      <TouchableNativeFeedback onPress={() => handleProductPress(item)}>
+        <View style={styles.product}>
+          <Image
+            source={{
+              uri: `https://fast.pockethost.io/api/files/${item.collectionId}/${item.id}/${item.Image}`,
+            }}
+            style={styles.imageProduct}
+          />
+          <View style={styles.ProductDescription}>
+            <Text style={styles.textProduct}>{item.nombre}</Text>
+            <Text style={styles.textDescription}>{item.descripcion}</Text>
+          </View>
+
+          <View style={styles.productInferiorPanel}>
+            <Text style={styles.productPrice}>${item.precio}</Text>
+            <TouchableOpacity
+              style={styles.addProduct}
+              onPress={() => setQt(1)}
+            >
+              <Ionicons name="add-circle-sharp" size={30} color="#FF7622" />
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
       </TouchableNativeFeedback>
-
     );
-  }
+  };
 
-  
   return (
-    <SafeContainer >
-      
+    <SafeContainer>
       <CustomHeader
         LeftIconComponent={() => <BackButton goBack={goBack} />}
         RightIconComponent={ShoppingCart}
@@ -297,17 +318,26 @@ export default function RestaurantScreen() {
         <ActivityIndicator size="large" color="#FF7622" />
       ) : (
         <>
+        <ScrollView showsVerticalScrollIndicator={false}>
           {renderKioskCard()}
+          <Divider style={styles.divider} />
 
           <FlatList
             data={products}
-            renderItem={ renderProductosIphone   }
+            renderItem={renderProductosIphone}
             keyExtractor={(item) => item.id.toString()}
             numColumns={2}
-            contentContainerStyle={{alignItems:'center', justifyContent:'center', marginTop: 10, paddingBottom:30}}
+            contentContainerStyle={{
+              alignItems: "center",
+              justifyContent: "center",
+              marginTop: 10,
+              paddingBottom: 30,
+            }}
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}
+            scrollEnabled={false}
           />
+          </ScrollView>
         </>
       )}
     </SafeContainer>
@@ -315,7 +345,6 @@ export default function RestaurantScreen() {
 }
 
 const styles = StyleSheet.create({
-  
   cardProduct: {
     marginTop: 24,
     backgroundColor: "#fff",
@@ -327,52 +356,63 @@ const styles = StyleSheet.create({
     shadowRadius: 0,
     elevation: 0, // Remove Shadow for Android
   },
-  product:{
+  product: {
     width: 170,
     height: 185,
-    marginTop:10,
-    backgroundColor:'#fff',
+    marginTop: 10,
+    backgroundColor: "#fff",
     marginHorizontal: 10,
     borderRadius: 10,
-    alignItems:'center',
+    alignItems: "center",
     elevation: 3,
-    shadowColor: 'black',
+    shadowColor: "black",
     shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowRadius: 3,
   },
-  imageProduct:{
+  ProductDescription: {
+    flex:1,
+    width: "100%",
+    paddingLeft: 10,
+    // backgroundColor: "red",
+  },
+  imageProduct: {
     width: 114,
     height: 90,
     borderRadius: 10,
   },
-  textProduct:{
+  textProduct: {
     fontSize: 15,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginTop: 5,
   },
-  textDescription:{
-    fontSize: 10  ,
-    fontWeight: 'normal',
+  textDescription: {
+    fontSize: 10,
+    fontWeight: "normal",
     marginTop: 5,
   },
-  productInferiorPanel:{
-    flex:1,
-    flexDirection:'row',
-    width: '100%',
+  productInferiorPanel: {
+    flex: 1,
+    flexDirection: "row",
+    width: "100%",
     // backgroundColor:'blue',
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
-    alignItems:'center',
+    alignItems: "center",
   },
-  productPrice:{
+  productPrice: {
     fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'left',
+    fontWeight: "bold",
+    textAlign: "left",
     marginLeft: 10,
   },
-  addProduct:{
-    marginLeft: 'auto',
+  addProduct: {
+    marginLeft: "auto",
     marginRight: 2,
-  }
+  },
+  divider: {
+    borderWidth: 0.5,
+    borderColor: "#ECF0F4",
+    marginVertical: 0,
+  },
 });
